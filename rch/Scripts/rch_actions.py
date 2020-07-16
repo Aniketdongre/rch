@@ -53,7 +53,7 @@ def login(username, pw):
     # home button click
     driver.find_element_by_xpath('//*[@id="HomeMenu"]/span').click()
 
-    sleep(30)
+    
 
 
 
@@ -82,10 +82,20 @@ def get_page():
 
     #method for explicit wait until element located by xpath, xpath is given to constructor
 
-def ex_wait(xpath):
+def ex_wait_xpath(xpath):
     try:
-        element = WebDriverWait(driver,30).until(EC.presence_of_element_located((By.XPATH,xpath))
+        element = WebDriverWait(driver,50).until(EC.presence_of_element_located((By.XPATH,xpath))
         )
+        return element
+    finally:
+        pass
+
+        #method for explicit wait until url changed
+
+def ex_wait_urlchange():
+    try:
+        element = WebDriverWait(driver,30).until(EC.url_changes)
+        print("waited until url changed inside wait")
         return element
     finally:
         pass
@@ -108,19 +118,35 @@ def setDate():
 
 
 def alertHandler():
+    #wait until Alert is present
+
+    try:
+        element = WebDriverWait(driver,30).until(EC.alert_is_present())
+        print("Alert Detected")
+        return element
+    except:
+        pass
+    finally:
+        pass
+
 
 
     #get Alert_text
+    try:
+        sleep(2)
+        alert_text = driver.switch_to_alert().text
 
-    alert_text = driver.switch_to_alert().text
+        print("Alert text is : ",alert_text)
 
-    print("Alert text is : ",alert_text)
+        success = 'Successfully'
+        # checks if alert is of successfull
 
-    success = 'Successfully'
-    # checks if alert is of successfull
-
-    if success in alert_text:
-        #clicks on on alert
-        driver.switch_to_alert().accept()
+        if success in alert_text:
+            #clicks on on alert
+            driver.switch_to_alert().accept()
+            print("Alert is accepted")
+            sleep(5)
+    except:
+        pass
 
 

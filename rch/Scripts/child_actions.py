@@ -13,15 +13,20 @@ def Child():
 
     setData()
 
-    # clicks on submit button
-    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_btnSave"]').click()
-    sleep(3)
-
     # alert_handling
 
     ra.alertHandler()
 
-    # sets child immunization options according to option selected
+    # select the id box for next id
+    ra.ex_wait_xpath('//*[@id="txtRCH_MCTS_ID"]')
+    
+    ra.driver.find_element_by_xpath('//*[@id="txtRCH_MCTS_ID"]').click()
+
+    #wait until next id opens
+
+    ra.ex_wait_urlchange()
+
+    print("waited until url changed inside wait")
 
 
 
