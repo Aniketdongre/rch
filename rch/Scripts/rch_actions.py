@@ -4,7 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from time import  sleep
 import child_actions as ca
-
+import mother_actions as mo
+from captchaOCR import captchaOCR
 
 
 driver = ''
@@ -15,7 +16,7 @@ def login(username, pw):
     driver = webdriver.Chrome()
     driver.maximize_window()
     driver.get("https://www.rch.nhm.gov.in/RCH/")
-    sleep(1)
+
     # Auto login
     driver.find_element_by_xpath('//*[@id="form1"]/header/div[2]/div[2]/div[3]').click()
     sleep(1)
@@ -31,19 +32,24 @@ def login(username, pw):
     # sets Password
     driver.find_element_by_xpath('//*[@id="txtPassword"]') \
         .send_keys(pw)
-    sleep(10)
-    # self.captcha = self.driver.find_element_by_xpath('//*[@id="txtimgcode"]').get_attribute('value')
+    
+    #captcha processing
 
+    captchaOCR()
+    sleep(2)
     # clicks on login
     driver.find_element_by_xpath('//*[@id="btnLogin"]').click()
 
+    ex_wait_xpath('//*[@id="SMSMenu"]/span')
+
     driver.find_element_by_xpath('//*[@id="SMSMenu"]/span').click()
 
-    sleep(5)
+    ex_wait_xpath('//*[@id="SingleMainContent_UserInfoBoxControl2_ddlSubCentre"]/option[5]')
 
     driver.find_element_by_xpath('//*[@id="SingleMainContent_UserInfoBoxControl2_ddlSubCentre"]/option[5]').click()
 
-    sleep(3)
+    ex_wait_xpath('//*[@id="SingleMainContent_UserInfoBoxControl2_ddlVillage"]/option[3]')
+
     driver.find_element_by_xpath('//*[@id="SingleMainContent_UserInfoBoxControl2_ddlVillage"]/option[3]').click()
     sleep(2)
     driver.find_element_by_xpath('//*[@id="SingleMainContent_UserInfoBoxControl2_btnSave"]').click()
@@ -71,11 +77,21 @@ def get_page():
 
     urlCh1 = 'https://rch.nhm.gov.in/RCH/UI/ChildDataEntry.aspx?Id_Edit='
 
+    # url of Infant page in Tracking of Pregnant Women
+
+    urlInfant = 'https://rch.nhm.gov.in/RCH/UI/InfantPNC.aspx?Id='
+
     # compairing current page url with url of all pages by comapiring substrig method
 
     if urlCh1 in page_url:
         # calling corresponding page method
-        ca.Child()
+        try:
+            ca.Child()
+        except UnexpectedAlertPresentException as e:
+            print('Exception occurrrred :'+e)
+            pass
+    elif urlInfant in page_url:
+        mo.infant()    
 
 
 
@@ -123,11 +139,12 @@ def alertHandler():
     try:
         element = WebDriverWait(driver,30).until(EC.alert_is_present())
         print("Alert Detected")
-        return element
-    except:
-        pass
-    finally:
-        pass
+        return True
+
+    except UnexpectedAlertPresentException as e:
+        print('Exception occurrrred :'+e)
+        return True
+    
 
 
 
@@ -145,8 +162,7 @@ def alertHandler():
             #clicks on on alert
             driver.switch_to_alert().accept()
             print("Alert is accepted")
-            sleep(5)
-    except:
-        pass
-
+    except UnexpectedAlertPresentException as e:
+        print('Exception occurrrred :'+e)
+        return False
 

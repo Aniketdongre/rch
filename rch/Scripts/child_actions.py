@@ -14,19 +14,13 @@ def Child():
     setData()
 
     # alert_handling
-
-    ra.alertHandler()
-
-    # select the id box for next id
-    ra.ex_wait_xpath('//*[@id="txtRCH_MCTS_ID"]')
+    '''  try:
+        ra.alertHandler()
+    except UnexpectedAlertPresentException as e:
+        print('Exception occurrrred :'+e)
+        return True
+    '''
     
-    ra.driver.find_element_by_xpath('//*[@id="txtRCH_MCTS_ID"]').click()
-
-    #wait until next id opens
-
-    ra.ex_wait_urlchange()
-
-    print("waited until url changed inside wait")
 
 
 
