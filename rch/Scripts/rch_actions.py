@@ -36,7 +36,7 @@ def login(username, pw):
     #captcha processing
 
     captchaOCR()
-    sleep(2)
+    sleep(4) #gives image code error if set 2
     # clicks on login
     driver.find_element_by_xpath('//*[@id="btnLogin"]').click()
 
@@ -59,7 +59,7 @@ def login(username, pw):
     # home button click
     driver.find_element_by_xpath('//*[@id="HomeMenu"]/span').click()
 
-    
+  
 
 
 
