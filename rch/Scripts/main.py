@@ -1,6 +1,13 @@
+from logging import exception
+
 import rch_actions as ra
 from time import sleep
 
+
+# start browser
+ra.initialize()
+
+# automate login
 ra.login(username='PHCDewhaoi',pw="Dewhadi@123")
 
 #wait until id page opens
@@ -11,7 +18,7 @@ ra.ex_wait_xpath('//*[@id="DivHierarchy"]/table/tbody/tr/td')
 
 try:
     ra.get_page()
-except UnexpectedAlertPresentException as e:
+except exception as e:
     print('Exception occurrrred :'+e)
     pass
     

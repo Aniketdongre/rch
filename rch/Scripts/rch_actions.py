@@ -2,6 +2,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from time import  sleep
 import child_actions as ca
 import mother_actions as mo
@@ -9,36 +10,55 @@ from captchaOCR import captchaOCR
 
 
 driver = ''
-
-
-def login(username, pw):
+def initialize():
     global driver
     driver = webdriver.Chrome()
     driver.maximize_window()
     driver.get("https://www.rch.nhm.gov.in/RCH/")
-
-    # Auto login
     driver.find_element_by_xpath('//*[@id="form1"]/header/div[2]/div[2]/div[3]').click()
     sleep(1)
+
+
+def login(username, pw):
+    global driver
+
+    # Auto login
 
     # selects state Maharastra
     driver.find_element_by_xpath('//*[@id="ddlStateName"]/option[21]').click()
 
     # sets usaername
     driver.find_element_by_xpath('//*[@id="txtUserName"]') \
+        .clear() #clearing any alread existing data
+    driver.find_element_by_xpath('//*[@id="txtUserName"]') \
         .send_keys(username)
     sleep(1)
 
     # sets Password
+
+    driver.find_element_by_xpath('//*[@id="txtPassword"]') \
+        .clear()
+
     driver.find_element_by_xpath('//*[@id="txtPassword"]') \
         .send_keys(pw)
     
     #captcha processing
 
     captchaOCR()
-    sleep(4) #gives image code error if set 2
+    sleep(5) #gives image code error if set 2
+
     # clicks on login
-    driver.find_element_by_xpath('//*[@id="btnLogin"]').click()
+    #driver.find_element_by_xpath('//*[@id="btnLogin"]').click()
+
+    # check if entered catpcha is right
+    #check for error message
+    try:
+        driver.find_element_by_id('Message')
+        print("eroor message found")
+        login(username='PHCDewhaoi', pw="Dewhadi@123")
+    except NoSuchElementException:
+        print(" login successful")
+
 
     ex_wait_xpath('//*[@id="SMSMenu"]/span')
 
@@ -58,6 +78,12 @@ def login(username, pw):
     print("location selected")
     # home button click
     driver.find_element_by_xpath('//*[@id="HomeMenu"]/span').click()
+
+    # FOR TESTING PUPOSE AUTOMATIC ID ENTRY
+
+    driver.find_element_by_xpath('//*[@id="SingleMainContent_txtRCH_MCTS_ID"]').clear()
+    driver.find_element_by_xpath('//*[@id="SingleMainContent_txtRCH_MCTS_ID"]').send_keys('127022336018')
+    driver.find_element_by_xpath('//*[@id="SingleMainContent_btnSearch"]').click()
 
   
 
@@ -139,6 +165,7 @@ def alertHandler():
     try:
         element = WebDriverWait(driver,30).until(EC.alert_is_present())
         print("Alert Detected")
+    
         return True
 
     except UnexpectedAlertPresentException as e:

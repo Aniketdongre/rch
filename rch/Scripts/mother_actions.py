@@ -1,5 +1,5 @@
 import rch_actions as ra
-from time import  sleep
+from time import sleep
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from datetime import timedelta
@@ -11,9 +11,21 @@ deliveryDate = ''
 
 def infant():
     print("inside infant")
-    
+
+    #Scroll to bottom of webpage
+    ra.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
 
     setPncDate()
+
+    sleep(4)
+    #Scroll to top of webpage
+    ra.driver.execute_script("scrollBy(0,-500);")
+
+    # clicks on next id entry field
+    ra.driver.find_element_by_xpath('//*[@id="txtRCH_MCTS_ID"]').click()
+    ra.alertHandler()
+    sleep(50)
 
     # click on Danger sign None
     ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_chkInfantNone"]').click()
@@ -24,24 +36,36 @@ def setPncDate():
     # This manipulates date to set date for entry
 
     pncday = PNC_ToEnter()
-    #selecting pncday to enter from drop down
-    select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlPNCPeriod"]'))
-    select.select_by_visible_text(pncday)
+
+    if pncday!=None:
+        # Make entry
+        #selecting pncday to enter from drop down
+        select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlPNCPeriod"]'))
+        select.select_by_visible_text(pncday)
 
 
-    #geting delivery date
-    global deliveryDate
-    deliveryDate = ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_lblDeliverydate').text
+        #geting delivery date
+        global deliveryDate
+        deliveryDate = ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_lblDeliverydate').text
 
-    # Determine days to add in delivery date to get Entry Date
-    global add_days
-    add_days = int(''.join(i for i in pncday if i.isdigit())) # get digits and then join to get number
+        # Determine days to add in delivery date to get Entry Date
+        global add_days
+        add_days = int(''.join(i for i in pncday if i.isdigit())) # get digits and then join to get number
     
 
-    print(add_days)
-    print(type(add_days))
 
-    DateManipulate()
+
+        DateManipulate()
+    else:
+        # 28th day is enter that means all four entries are done
+        #dont make any entry
+        #for mother pnc click on continue
+        # for child entry click on new id field
+        print('All entries are done')
+        pass
+
+    # Next id all the entries till the current sys date are made
+    # select entry field for next id
 
 
 def DateManipulate():
@@ -61,14 +85,18 @@ def DateManipulate():
     if entryDate.weekday() == 6:
         entryDate = entryDate + timedelta(days = 1) 
 
-    #convert datetime object into string object
-    entryDate = entryDate.strftime('%d-%m-%Y')
 
-    
 
-    #sets date in date entry field
-    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtPncDate"]').send_keys(entryDate)
-    
+    if entryDate < datetime.now() :
+
+        #convert datetime object into string object
+        entryDate = entryDate.strftime('%d-%m-%Y')
+
+        #sets date in date entry field
+        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtPncDate"]').send_keys(entryDate)
+    else:
+        print("calculated entry date is greater that todays date entry cant be made")
+
 
 
 
@@ -79,15 +107,19 @@ def PNC_ToEnter():
 
 
     pncDates = ['28th Day','21st Day','14th Day','7th Day']
+
     for index, Day in enumerate(pncDates) :
-        flag = 0
+        
         try:
             ra.driver.find_element_by_link_text(Day)
-            flag = 1
-            break
+            if index == 0:
+                break
+                return None
+            else:
+                return pncDates[index-1]
+
         except Exception:
-            pass
-    if flag == 1:
-        return pncDates[index-1]
-    elif flag == 0:
-        return pncDates[index]
+            if index == 3 :
+                break
+                return pncDates[index]
+

@@ -27,5 +27,5 @@ def captchaOCR():
     # OCR - converting image into text and putting captcha field
     ca_text = pytesseract.image_to_string(img)
 
+    ra.driver.find_element_by_xpath('//*[@id="txtimgcode"]').clear() # clearing if any alread existing data
     ra.driver.find_element_by_xpath('//*[@id="txtimgcode"]').send_keys(ca_text)
-    
