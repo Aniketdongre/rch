@@ -25,7 +25,7 @@ except exception as e:
 
 # select the id box for next id
 
-ra.driver.find_element_by_xpath('//*[@id="txtRCH_MCTS_ID"]').click()
+#ra.driver.find_element_by_xpath('//*[@id="txtRCH_MCTS_ID"]').click()
 
 #wait until next id opens
 

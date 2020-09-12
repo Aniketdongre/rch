@@ -9,6 +9,124 @@ add_days = ''
 deliveryDate = ''
 
 
+#Delivery Method
+
+
+
+
+
+
+
+
+
+# Function to work on Mother ANC
+
+
+def ANC():
+    print('inside Anc')
+    # Scroll to bottom of webpage
+    ra.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    try:
+        ra.driver.find_element_by_link_text(1)
+        print("element Found")
+        setANC()
+
+
+    except Exception:
+        print("no previous entries found")
+        pass
+
+    setPlace()
+    # click on High Risk None
+
+    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_chkNone"]').click()
+
+    # After all anc entries are made and clicked on continue
+
+
+
+
+def setANC():
+    print("iside Set Anc")
+
+    LMP_Date = ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_lblLMP').text
+    LMP_Date = datetime.strptime(LMP_Date, '%d-%m-%Y')
+
+    entryDate = LMP_Date + timedelta(days=56)
+    # make sure its not sunday
+    if entryDate.weekday() == 6:
+        entryDate = entryDate + timedelta(days=1)
+
+    if entryDate < datetime.now():
+
+        # convert datetime object into string object
+        entryDate = entryDate.strftime('%d-%m-%Y')
+
+        # sets date in date entry field
+        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtAncDate"]').send_keys(
+            entryDate)
+    else:
+        print("calculated ANC entry date is greater that todays date entry cant be made")
+
+
+
+def setPlace():
+
+    village_data = ra.driver.find_element_by_xpath('//*[@id="lblHierarchy"]').text
+
+    village_id = {'(11749)': 'Madagi','(11750)': 'Chargaon', '(11751)':'Dhorwada'}
+
+    for village in village_id:
+        if village in village_data:
+            place =  village_id[village]
+
+
+    if place=='Chargoan':
+        select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFPforANCDone"]'))
+        select.select_by_visible_text('Village')
+
+        ra.ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]')
+
+
+        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]').click()
+        sleep(2)
+
+        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]/option[1]').click()
+
+
+    elif place == 'Dhorwada':
+
+        select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFPforANCDone"]'))
+        select.select_by_visible_text('Village')
+
+        ra.ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]')
+
+        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]').click()
+        sleep(2)
+
+        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]/option[2]').click()
+
+
+
+
+    else:
+        select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFPforANCDone"]'))
+        select.select_by_visible_text('SubCentre')
+
+        ra.ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]/option[5]')
+
+        select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]'))
+        select.select_by_visible_text('Madagi (Bhandara)')
+
+
+
+
+
+
+
+
+
 def infant():
     print("inside infant")
 

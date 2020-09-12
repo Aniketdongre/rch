@@ -32,7 +32,7 @@ def login(username, pw):
         .clear() #clearing any alread existing data
     driver.find_element_by_xpath('//*[@id="txtUserName"]') \
         .send_keys(username)
-    sleep(1)
+    sleep(2)
 
     # sets Password
 
@@ -41,11 +41,12 @@ def login(username, pw):
 
     driver.find_element_by_xpath('//*[@id="txtPassword"]') \
         .send_keys(pw)
-    
+
+    sleep(1)
     #captcha processing
 
     captchaOCR()
-    sleep(5) #gives image code error if set 2
+    sleep(6) #gives image code error if set 2
 
     # clicks on login
     #driver.find_element_by_xpath('//*[@id="btnLogin"]').click()
@@ -107,6 +108,10 @@ def get_page():
 
     urlInfant = 'https://rch.nhm.gov.in/RCH/UI/InfantPNC.aspx?Id='
 
+    #url of mother ANC
+
+    urlANC = 'https://rch.nhm.gov.in/RCH/UI/MotherANC.aspx?Id='
+
     # compairing current page url with url of all pages by comapiring substrig method
 
     if urlCh1 in page_url:
@@ -117,7 +122,10 @@ def get_page():
             print('Exception occurrrred :'+e)
             pass
     elif urlInfant in page_url:
-        mo.infant()    
+        mo.infant()
+
+    elif urlANC in page_url:
+        mo.ANC()
 
 
 
@@ -136,7 +144,7 @@ def ex_wait_xpath(xpath):
 
 def ex_wait_urlchange():
     try:
-        element = WebDriverWait(driver,30).until(EC.url_changes)
+        element = WebDriverWait(driver,100).until(EC.url_changes)
         print("waited until url changed inside wait")
         return element
     finally:
