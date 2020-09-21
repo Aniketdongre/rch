@@ -96,12 +96,6 @@ def get_page():
     print("i am inside get_page")
 
     sleep(3)
-    # temprory for deliver outcome check
-    ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtDeliveryDate"]')
-    sleep(15)
-    mo.DeliveryOut()
-    sleep(180)
-
 
     # store url of currently loaded page
 
