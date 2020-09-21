@@ -30,6 +30,7 @@ def login(username, pw):
     # sets usaername
     driver.find_element_by_xpath('//*[@id="txtUserName"]') \
         .clear() #clearing any alread existing data
+    sleep(1)
     driver.find_element_by_xpath('//*[@id="txtUserName"]') \
         .send_keys(username)
     sleep(2)
@@ -38,7 +39,7 @@ def login(username, pw):
 
     driver.find_element_by_xpath('//*[@id="txtPassword"]') \
         .clear()
-
+    sleep(1)
     driver.find_element_by_xpath('//*[@id="txtPassword"]') \
         .send_keys(pw)
 
@@ -83,7 +84,7 @@ def login(username, pw):
     # FOR TESTING PUPOSE AUTOMATIC ID ENTRY
 
     driver.find_element_by_xpath('//*[@id="SingleMainContent_txtRCH_MCTS_ID"]').clear()
-    driver.find_element_by_xpath('//*[@id="SingleMainContent_txtRCH_MCTS_ID"]').send_keys('127022336018')
+    driver.find_element_by_xpath('//*[@id="SingleMainContent_txtRCH_MCTS_ID"]').send_keys('127010351686')
     driver.find_element_by_xpath('//*[@id="SingleMainContent_btnSearch"]').click()
 
   
@@ -95,6 +96,12 @@ def get_page():
     print("i am inside get_page")
 
     sleep(3)
+    # temprory for deliver outcome check
+    ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtDeliveryDate"]')
+    sleep(15)
+    mo.DeliveryOut()
+    sleep(180)
+
 
     # store url of currently loaded page
 

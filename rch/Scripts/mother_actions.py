@@ -1,5 +1,7 @@
 import rch_actions as ra
 from time import sleep
+
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from datetime import timedelta
@@ -30,7 +32,6 @@ def ANC():
     try:
         ra.driver.find_element_by_link_text(1)
         print("element Found")
-        setANC()
 
 
     except Exception:
@@ -38,36 +39,15 @@ def ANC():
         pass
 
     setPlace()
+    # click on urin test donte
+    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlUrineTest"]/option[3]').click()
     # click on High Risk None
-
     ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_chkNone"]').click()
 
     # After all anc entries are made and clicked on continue
 
 
 
-
-def setANC():
-    print("iside Set Anc")
-
-    LMP_Date = ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_lblLMP').text
-    LMP_Date = datetime.strptime(LMP_Date, '%d-%m-%Y')
-
-    entryDate = LMP_Date + timedelta(days=56)
-    # make sure its not sunday
-    if entryDate.weekday() == 6:
-        entryDate = entryDate + timedelta(days=1)
-
-    if entryDate < datetime.now():
-
-        # convert datetime object into string object
-        entryDate = entryDate.strftime('%d-%m-%Y')
-
-        # sets date in date entry field
-        ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtAncDate"]').send_keys(
-            entryDate)
-    else:
-        print("calculated ANC entry date is greater that todays date entry cant be made")
 
 
 
@@ -118,6 +98,49 @@ def setPlace():
 
         select = Select(ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlFacilityPlaceId"]'))
         select.select_by_visible_text('Madagi (Bhandara)')
+
+
+
+def DeliveryOut():
+
+    print("inside deliver out")
+    # it makes delivery outcome page automatic
+
+    # wait for drop down is selected and sub drop drown is appeared
+
+    ra.ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlReffralFacility"]/option[1]')
+
+    # selecting the place of dilivery
+    # slecting using option value attribute of drop down
+    # dictiory = {value:who conducted delivery}
+
+    select = Select(ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_ddlReffralFacility'))
+    del_location_id  = {'3801': 'Staff Nurse','2188':'ANM','10731':'ANM','3713':'Staff Nurse'}
+
+    for id in del_location_id :
+        try:
+            select.select_by_value(id) # selecting place of del
+            # selecting who conducted delivery
+            select = Select(ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_ddlDeliveryConducted'))
+            select.select_by_visible_text(del_location_id[id])
+            break
+        except NoSuchElementException:
+            pass
+
+    # selecting delivery complication as none
+
+    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_chkNone"]').click()
+    print('cliked on none')
+
+    # set delivery outcome and live birth as 1 child
+    select = Select(ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_ddlDeliveryOutcomes'))
+    select.select_by_visible_text('1')
+
+    select = Select(ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_ddlLiveBirth'))
+    select.select_by_visible_text('1')
+
+
+
 
 
 
