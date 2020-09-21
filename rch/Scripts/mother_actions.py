@@ -144,13 +144,20 @@ def DeliveryOut():
 
 
 
+def infant_Details():
+    print("inside infant details")
+    select = Select(ra.driver.find_element_by_id('SingleMainContent_DoubleMainContent_ddlBabyCried'))
+    select.select_by_visible_text("Yes")
+
+    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_ddlBreastFeeding"]/option[2]').click()
+
+    ra.driver.find_element_by_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtBirthWeight"]').click()
 
 
 
 
 
-
-def infant():
+def infant_pnc():
     print("inside infant")
 
     #Scroll to bottom of webpage

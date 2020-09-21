@@ -94,7 +94,13 @@ def login(username, pw):
 
 def get_page():
     print("i am inside get_page")
+    sleep(5)
 
+    ex_wait_xpath('//*[@id="SingleMainContent_DoubleMainContent_txtBirthWeight"]')
+
+    mo.infant_Details()
+
+    sleep(180)
     sleep(3)
 
     # store url of currently loaded page
